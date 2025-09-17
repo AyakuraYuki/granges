@@ -9,16 +9,6 @@ type Range[C Comparable] struct {
 	invalid bool
 }
 
-// Invalid creates an explicitly invalid range of the specified comparable
-// type.
-//
-// This method is useful when you need to represent the concept of
-// "no valid range" or signal an error condition in contexts where returning a
-// range is required but no meaningful range can be constructed.
-func Invalid[C Comparable]() Range[C] {
-	return Range[C]{invalid: true}
-}
-
 func create[C Comparable](lowerBound, upperBound Cut[C]) (Range[C], error) {
 	if lowerBound.Compare(upperBound) > 0 ||
 		lowerBound.cutType == AboveAll ||

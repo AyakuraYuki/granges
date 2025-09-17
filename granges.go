@@ -177,7 +177,7 @@ func UpTo[C Comparable](endpoint C, boundType BoundType) (Range[C], error) {
 	case CLOSED:
 		return AtMost(endpoint), nil
 	default:
-		return Range[C]{}, ErrWrongBoundType
+		return Invalid[C](), ErrWrongBoundType
 	}
 }
 
@@ -191,6 +191,16 @@ func DownTo[C Comparable](endpoint C, boundType BoundType) (Range[C], error) {
 	case CLOSED:
 		return AtLeast(endpoint), nil
 	default:
-		return Range[C]{}, ErrWrongBoundType
+		return Invalid[C](), ErrWrongBoundType
 	}
+}
+
+// Invalid creates an explicitly invalid range of the specified comparable
+// type.
+//
+// This method is useful when you need to represent the concept of
+// "no valid range" or signal an error condition in contexts where returning a
+// range is required but no meaningful range can be constructed.
+func Invalid[C Comparable]() Range[C] {
+	return Range[C]{invalid: true}
 }

@@ -333,17 +333,25 @@ func TestRange_Equal(t *testing.T) {
 	assert.True(t, granges.GreaterThan(2).Equal(granges.GreaterThan(2)))
 	assert.True(t, granges.All[int]().Equal(granges.All[int]()))
 
+	upTo, _ := granges.UpTo(7, granges.CLOSED)
+	assert.True(t, granges.AtMost(7).Equal(upTo))
+
+	upTo, _ = granges.UpTo(7, granges.OPEN)
+	assert.True(t, granges.LessThan(7).Equal(upTo))
+
+	// with invalid bound type
+	upTo, _ = granges.UpTo(7, granges.Unbounded)
+	assert.True(t, upTo.IsInvalid())
+
 	downTo, _ := granges.DownTo(1, granges.CLOSED)
 	assert.True(t, granges.AtLeast(1).Equal(downTo))
 
 	downTo, _ = granges.DownTo(1, granges.OPEN)
 	assert.True(t, granges.GreaterThan(1).Equal(downTo))
 
-	upTo, _ := granges.UpTo(7, granges.CLOSED)
-	assert.True(t, granges.AtMost(7).Equal(upTo))
-
-	upTo, _ = granges.UpTo(7, granges.OPEN)
-	assert.True(t, granges.LessThan(7).Equal(upTo))
+	// with invalid bound type
+	downTo, _ = granges.DownTo(1, granges.Unbounded)
+	assert.True(t, downTo.IsInvalid())
 
 	assert.True(t, granges.Open(1, 7).Equal(granges.New(1, granges.OPEN, 7, granges.OPEN)))
 	assert.True(t, granges.OpenClosed(1, 7).Equal(granges.New(1, granges.OPEN, 7, granges.CLOSED)))
