@@ -1,3 +1,3 @@
 # granges
 
-granges is a mathematical interval operation tool, translated from Guava's Range.
+`granges` is a mathematical interval operation tool, ported from Guava's Range.
