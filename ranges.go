@@ -9,12 +9,22 @@ type Range[C Comparable] struct {
 	invalid bool
 }
 
+// Invalid creates an explicitly invalid range of the specified comparable
+// type.
+//
+// This method is useful when you need to represent the concept of
+// "no valid range" or signal an error condition in contexts where returning a
+// range is required but no meaningful range can be constructed.
+func Invalid[C Comparable]() Range[C] {
+	return Range[C]{invalid: true}
+}
+
 func create[C Comparable](lowerBound, upperBound Cut[C]) (Range[C], error) {
 	if lowerBound.Compare(upperBound) > 0 ||
 		lowerBound.cutType == AboveAll ||
 		upperBound.cutType == BelowAll {
 
-		return Range[C]{invalid: true}, fmt.Errorf(
+		return Invalid[C](), fmt.Errorf(
 			"invalid range: %s..%s",
 			lowerBound.DescribeAsLowerBound(),
 			upperBound.DescribeAsUpperBound())
@@ -222,7 +232,7 @@ func (r Range[C]) IntersectionE(connectedRange Range[C]) (Range[C], error) {
 		}
 
 		if newLower.Compare(newUpper) > 0 {
-			return Range[C]{invalid: true}, fmt.Errorf(
+			return Invalid[C](), fmt.Errorf(
 				"intersection is undefined for disconnected ranges %s and %s",
 				r, connectedRange)
 		}
@@ -260,7 +270,7 @@ func (r Range[C]) Gap(other Range[C]) Range[C] {
 func (r Range[C]) GapE(other Range[C]) (Range[C], error) {
 	if r.lowerBound.Compare(other.upperBound) < 0 &&
 		other.lowerBound.Compare(r.upperBound) < 0 {
-		return Range[C]{invalid: true}, fmt.Errorf(
+		return Invalid[C](), fmt.Errorf(
 			"ranges have a nonempty intersection: %s, %s", r, other)
 	}
 
